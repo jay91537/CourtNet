@@ -26,7 +26,7 @@ flowchart TD
 
 ```mermaid
 ---
-title : 회원가입/로그인 이건 무슨 flow지?
+title : 회원가입/로그인 flow
 ---
 sequenceDiagram
 	participant client
