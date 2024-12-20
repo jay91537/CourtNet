@@ -2,10 +2,13 @@ package com.dbcourtnet.location;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
 @Entity
+@Getter
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class Location {
 
     @Id
@@ -15,10 +18,4 @@ public class Location {
     private String locationName;
 
     private String address;
-
-    public Location(final Long id, final String locationName, final String address) {
-        this.id = id;
-        this.locationName = locationName;
-        this.address = address;
-    }
 }

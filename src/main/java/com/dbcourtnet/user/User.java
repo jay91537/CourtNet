@@ -1,10 +1,12 @@
 package com.dbcourtnet.user;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
+@Getter
+@AllArgsConstructor
 public class User {
 
     @Id
@@ -20,11 +22,4 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    public User(final Long id, final String loginId, final String password, final String username, Gender gender) {
-        this.id = id;
-        this.loginId = loginId;
-        this.password = password;
-        this.username = username;
-        this.gender = gender;
-    }
 }
