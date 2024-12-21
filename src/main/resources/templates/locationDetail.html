@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${location.get().getLocationName()}"></title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f8f9fa;
+        }
+        .container {
+            text-align: center;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 800px;
+        }
+        h2{
+            margin-bottom: 20px;
+            color: #343a40;
+        }
+        h3 {
+            margin-bottom: 10px;
+            color: #6c757d;
+            text-align: left;
+            padding-left: 10px;
+        }
+        hr {
+            border: 0;
+            border-top: 1px solid #e9ecef;
+            margin: 20px 0;
+        }
+        .detail-list{
+            list-style: none; /* 목록 스타일 제거 */
+            padding-left: 10px;
+            margin-bottom: 20px;
+        }
+        .detail-list li{
+            text-align: left;
+            margin-bottom: 5px;
+        }
+        table {
+            border-collapse: collapse; /* 테이블 테두리 간격 제거 */
+            width: 100%;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd; /* 테이블 셀 테두리 설정 */
+            padding: 8px;   /* 테이블 셀 안쪽 간격 설정 */
+            text-align: left;    /* 글자 왼쪽 정렬 */
+            white-space: nowrap; /* 셀 안의 내용이 줄바꿈되지 않도록 설정 */
+        }
+        th{
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <h2 th:text="${location.get().getLocationName()}"></h2>
+    <div>
+        <h3>주소 : <span th:text="${location.get().getAddress()}"></span>
+        </h3>
+        <h3>코트 수 : <span th:text="${location.get().getCourtNum()}"></span></h3>
+        <h3>코트 재질 : </h3>
+        <table>
+            <tbody>
+            <tr th:each="courtTexture : ${courtTextures}">
+                <td th:text="${courtTexture}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:if="${not #lists.isEmpty(reviewList)}">
+        <h3>리뷰 검색 결과</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>번호</th>
+                <th>작성자</th>
+                <th>작성날짜</th>
+                <th>평점</th>
+                <th>리뷰 내용</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="reviews : ${reviewList}">
+                <td><a th:href="@{/findLocation/location/{id}/review/{reviewId}(id=${location.get().getId()}, reviewId=${reviews.getId()})}" th:text="${1+reviewList.indexOf(reviews)}"></a></td>
+                <td th:text="${reviews.getUsername()}"></td>
+                <td th:text="${reviews.getDate()}"></td>
+                <td th:text="${reviews.getRating()}"></td>
+                <td th:text="${reviews.getText()}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div th:if="${#lists.isEmpty(reviewList)}">
+        <p>리뷰가 없습니다.</p>
+    </div>
+
+</div>
+</body>
+</html>

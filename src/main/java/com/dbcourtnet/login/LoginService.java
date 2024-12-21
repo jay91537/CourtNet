@@ -6,6 +6,7 @@ import com.dbcourtnet.user.User;
 import com.dbcourtnet.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -20,13 +21,15 @@ public class LoginService {
         return loginRepository.existsByLoginId(loginId);
     }
 
+
     public void join(JoinRequestDTO joinRequest) {
         userRepository.save(joinRequest.toEntity());
     }
 
+
     public User login(LoginRequestDTO loginRequest) {
 
-        Optional<User> optionalUser = userRepository.findById(loginRequest.getLoginId());
+        Optional<User> optionalUser = userRepository.findByLoginId(loginRequest.getLoginId());
 
         if(optionalUser.isEmpty()) {
             return null;

@@ -1,12 +1,14 @@
 package com.dbcourtnet.login.dto;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class LoginRequestDTO {
 
-    private Long loginId;
+    private String loginId;
 
-    private Long password;
+    private String password;
 
 }

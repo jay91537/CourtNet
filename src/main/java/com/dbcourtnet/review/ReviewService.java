@@ -48,13 +48,13 @@ public class ReviewService {
 
     // 어떤 구장에 대한 모든 리뷰
     @Transactional
-    public List<Review> getAllReviewsByLocation (ReviewRequestDTO reviewRequest) {
+    public List<Review> findAllByLocationId (Long id) {
 
-        if (reviewRequest.getLocationId() == null) {
+        if (id == null) {
             throw new IllegalArgumentException("장소가 존재하지 않습니다.");
         }
 
-        return reviewRepository.findAllByLocationId(reviewRequest.getLocationId());
+        return reviewRepository.findAllByLocationId(id);
     }
 
     // 어떤 유저의 특정 구장 리뷰 업데이트
@@ -90,5 +90,4 @@ public class ReviewService {
         }
 
     }
-
 }

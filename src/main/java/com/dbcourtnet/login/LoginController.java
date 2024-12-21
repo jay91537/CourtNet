@@ -3,20 +3,22 @@ package com.dbcourtnet.login;
 import com.dbcourtnet.login.dto.JoinRequestDTO;
 import com.dbcourtnet.login.dto.LoginRequestDTO;
 import com.dbcourtnet.user.User;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping(value = {"", "/"})
 public class LoginController {
 
     private final LoginService loginService;
 
     // 로그이 되기 전 home 화면
-    @GetMapping(value = {"", "/"})
+    @GetMapping(value = {"/home"})
     public String home(Model model) {
 
 
@@ -41,15 +43,19 @@ public class LoginController {
     }
 
     @PostMapping("/join")
-    public String join(@ModelAttribute JoinRequestDTO joinRequest) throws Exception {
+    public String join(@Valid @ModelAttribute JoinRequestDTO joinRequest, BindingResult bindingResult) {
 
         if(loginService.checkLoginIdDuplicate(joinRequest.getLoginId())) {
-            throw new Exception("이미 존재하는 아이디 입니다.");
+            bindingResult.addError(new FieldError("joinRequest", "loginId", "로그인 아이디가 중복됩니다."));
+        }
+
+        if(bindingResult.hasErrors()) {
+            return "join";
         }
 
         loginService.join(joinRequest);
 
-        return "/login";
+        return "redirect:/home";
     }
 
     // 로그인 화면
@@ -64,11 +70,11 @@ public class LoginController {
 
         User user = loginService.login(loginRequest);
 
-        if(user == null){
-            throw new Exception("존재하지 않는 유저입니다.");
+        if(user == null) {
+            throw new Exception("아이디 혹은 비밀번호가 일치하지 않습니다.");
         }
 
-        return "/home2";
+        return "redirect:/home2";
     }
 
 

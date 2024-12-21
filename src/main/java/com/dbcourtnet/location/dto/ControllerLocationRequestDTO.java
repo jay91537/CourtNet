@@ -1,12 +1,13 @@
 package com.dbcourtnet.location.dto;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class LocationResponseDTO {
+public class ControllerLocationRequestDTO {
 
-    private String locationName;
+    private String address;
 
 }

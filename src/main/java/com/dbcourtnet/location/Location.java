@@ -18,4 +18,6 @@ public class Location {
     private String locationName;
 
     private String address;
+
+    private Long courtNum;
 }

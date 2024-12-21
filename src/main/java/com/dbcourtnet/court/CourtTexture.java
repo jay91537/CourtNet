@@ -5,5 +5,4 @@ public enum CourtTexture {
     ASPHALT,
     URETHANE,
     PLASTIC
-
 }

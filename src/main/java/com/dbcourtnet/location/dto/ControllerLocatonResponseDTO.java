@@ -5,8 +5,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class LocationResponseDTO {
+public class ControllerLocatonResponseDTO {
 
-    private String locationName;
+
 
 }
