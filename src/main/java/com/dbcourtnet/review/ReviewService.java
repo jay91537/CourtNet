@@ -23,9 +23,6 @@ public class ReviewService {
     // 리뷰 생성
     public void join(ReviewRequestDTO reviewRequest) {
 
-
-
-
         if(reviewRequest.getUserId()==null){
             throw new IllegalArgumentException("유저가 존재하지 않습니다.");
         }
@@ -106,4 +103,39 @@ public class ReviewService {
 
         return reviewRepository.findAllByUserId(userId);
     }
+
+    @Transactional
+    public Optional<Review> findById(Long reviewId) {
+        return reviewRepository.findById(reviewId);
+    }
+
+    @Transactional
+    public void updateReview(Long reviewId, ReviewRequestDTO reviewRequest) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new IllegalArgumentException("리뷰가 존재하지 않습니다."));
+
+
+        if (!review.getUser().getId().equals(reviewRequest.getUserId())) {
+            throw new IllegalArgumentException("리뷰 수정 권한이 없습니다.");
+        }
+
+
+        review.setRating(reviewRequest.getRating());
+        review.setText(reviewRequest.getText());
+    }
+
+    @Transactional
+    public void deleteReview(Long reviewId, Long userId) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new IllegalArgumentException("리뷰가 존재하지 않습니다."));
+
+
+        if (!review.getUser().getId().equals(userId)) {
+            throw new IllegalArgumentException("리뷰 삭제 권한이 없습니다.");
+        }
+
+
+        reviewRepository.delete(review);
+    }
+
 }

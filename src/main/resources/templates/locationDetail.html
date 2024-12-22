@@ -70,6 +70,38 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
+        .edit-button, .delete-button {
+            padding: 5px 10px;
+            margin: 0 2px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .edit-button {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .delete-button {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .edit-button:hover {
+            background-color: #218838;
+        }
+
+        .delete-button:hover {
+            background-color: #c82333;
+        }
+
+        td form {
+            margin: 0;
+        }
     </style>
 </head>
 <body>
@@ -108,6 +140,19 @@
                 <td th:text="${reviews.getDate()}"></td>
                 <td th:text="${reviews.getRating()}"></td>
                 <td th:text="${reviews.getText()}"></td>
+                <td>
+                    <a th:if="${userId == reviews.getUser().getId()}"
+                       th:href="@{/findLocation/location/{locationId}/review/{reviewId}/edit(locationId=${location.get().getId()}, reviewId=${reviews.getId()})}"
+                       class="edit-button">수정</a>
+                    <form th:if="${userId == reviews.getUser().getId()}"
+                          th:action="@{/findLocation/location/{locationId}/review/{reviewId}/delete(locationId=${location.get().getId()}, reviewId=${reviews.getId()})}"
+                          method="post"
+                          style="display: inline;">
+                        <button type="submit" class="delete-button"
+                                onclick="return confirm('정말로 이 리뷰를 삭제하시겠습니까?')">삭제</button>
+                    </form>
+                </td>
+
             </tr>
             </tbody>
         </table>

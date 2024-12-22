@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>리뷰 수정</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f8f9fa;
+        }
+        .container {
+            text-align: center;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 400px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #495057;
+        }
+        input[type="number"],
+        textarea {
+            width: calc(100% - 16px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            display: block;
+            margin: 20px auto 0 auto;
+            padding: 10px 20px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <h2>리뷰 수정</h2>
+    <form th:method="post"
+          th:action="@{/findLocation/location/{locationId}/review/{reviewId}/edit (locationId=${locationId}, reviewId=${review.id})}"
+          th:object="${reviewRequest}">
+        <div>
+            <label>작성자: [[${username}]]</label>
+        </div>
+        <br/>
+        <div>
+            <label>작성날짜: [[${review.date}]]</label>
+        </div>
+        <br/>
+        <div>
+            <label th:for="rating">평점:</label>
+            <input type="number" min="1" max="5" th:field="*{rating}" th:value="${review.rating}"/>
+        </div>
+        <br/>
+        <div>
+            <label th:for="text">리뷰 내용:</label>
+            <textarea th:field="*{text}" rows="5" cols="20" th:text="${review.text}"></textarea>
+        </div>
+        <br/>
+        <button type="submit">수정 완료</button>
+    </form>
+</div>
+</body>
+</html>

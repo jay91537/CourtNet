@@ -29,13 +29,13 @@ public class MakeInitData {
     public void makeLocationAndCourt() {
 
         // 유저 하드코딩
-//        User user1 = User.builder()
-//                .loginId("user1")
-//                .password("1234")
-//                .username("재현")
-//                .gender(Gender.MALE)
-//                .build();
-//        userRepository.save(user1);
+        User user1 = User.builder()
+                .loginId("user1")
+                .password("1234")
+                .username("재현")
+                .gender(Gender.MALE)
+                .build();
+        userRepository.save(user1);
 
         User user2 = User.builder()
                 .loginId("user2")
@@ -107,15 +107,15 @@ public class MakeInitData {
 
         // 리뷰 하드코딩
 
-//        Review review1 = Review.builder()
-//                .username("재현")
-//                .rating(5L)
-//                .text("농구하지 제일 좋은 곳입니다~")
-//                .date("2024-12-01")
-//                .user(user1)
-//                .location(location4)
-//                .build();
-//        reviewRepository.save(review1);
+        Review review1 = Review.builder()
+                .username("재현")
+                .rating(5L)
+                .text("농구하지 제일 좋은 곳입니다~")
+                .date("2024-12-01")
+                .user(user1)
+                .location(location4)
+                .build();
+        reviewRepository.save(review1);
 
         Review review2 = Review.builder()
                 .username("민지")
@@ -137,15 +137,15 @@ public class MakeInitData {
                 .build();
         reviewRepository.save(review3);
 
-//        Review review4 = Review.builder()
-//                .username("재현")
-//                .rating(2L)
-//                .text("백보드가 너무 잘 튕겨서 별로....")
-//                .date("2024-12-11")
-//                .user(user1)
-//                .location(location2)
-//                .build();
-//        reviewRepository.save(review4);
+        Review review4 = Review.builder()
+                .username("재현")
+                .rating(2L)
+                .text("백보드가 너무 잘 튕겨서 별로....")
+                .date("2024-12-11")
+                .user(user1)
+                .location(location2)
+                .build();
+        reviewRepository.save(review4);
 
         Review review5 = Review.builder()
                 .username("동언")
