@@ -29,18 +29,18 @@ public class MakeInitData {
     public void makeLocationAndCourt() {
 
         // 유저 하드코딩
-        User user1 = User.builder()
-                .loginId("user1")
-                .password("1234")
-                .username("jay")
-                .gender(Gender.MALE)
-                .build();
-        userRepository.save(user1);
+//        User user1 = User.builder()
+//                .loginId("user1")
+//                .password("1234")
+//                .username("재현")
+//                .gender(Gender.MALE)
+//                .build();
+//        userRepository.save(user1);
 
         User user2 = User.builder()
                 .loginId("user2")
                 .password("1234")
-                .username("minzi")
+                .username("민지")
                 .gender(Gender.FEMALE)
                 .build();
         userRepository.save(user2);
@@ -48,7 +48,7 @@ public class MakeInitData {
         User user3 = User.builder()
                 .loginId("user3")
                 .password("1234")
-                .username("mungun")
+                .username("문군")
                 .gender(Gender.MALE)
                 .build();
         userRepository.save(user3);
@@ -56,7 +56,7 @@ public class MakeInitData {
         User user4 = User.builder()
                 .loginId("user4")
                 .password("1234")
-                .username("keedongmon")
+                .username("동언")
                 .gender(Gender.MALE)
                 .build();
         userRepository.save(user4);
@@ -64,7 +64,7 @@ public class MakeInitData {
         User user5 = User.builder()
                 .loginId("user5")
                 .password("1234")
-                .username("minseo")
+                .username("민서")
                 .gender(Gender.FEMALE)
                 .build();
         userRepository.save(user5);
@@ -107,50 +107,50 @@ public class MakeInitData {
 
         // 리뷰 하드코딩
 
-        Review review1 = Review.builder()
-                .username("jay")
-                .rating(5L)
-                .text("good place to play basketball")
-                .date("2024-12-01")
-                .user(user1)
-                .location(location1)
-                .build();
-        reviewRepository.save(review1);
+//        Review review1 = Review.builder()
+//                .username("재현")
+//                .rating(5L)
+//                .text("농구하지 제일 좋은 곳입니다~")
+//                .date("2024-12-01")
+//                .user(user1)
+//                .location(location4)
+//                .build();
+//        reviewRepository.save(review1);
 
         Review review2 = Review.builder()
-                .username("minzi")
+                .username("민지")
                 .rating(4L)
-                .text("I love here!")
+                .text("재현이랑 같이 농구하니까 좋았어요~")
                 .date("2024-12-02")
                 .user(user2)
-                .location(location1)
+                .location(location4)
                 .build();
         reviewRepository.save(review2);
 
         Review review3 = Review.builder()
-                .username("mungun")
+                .username("문군")
                 .rating(3L)
-                .text("sucks")
+                .text("농구하기 딱좋음")
                 .date("2024-12-05")
                 .user(user3)
-                .location(location2)
+                .location(location1)
                 .build();
         reviewRepository.save(review3);
 
-        Review review4 = Review.builder()
-                .username("jay")
-                .rating(2L)
-                .text("Soso.")
-                .date("2024-12-11")
-                .user(user1)
-                .location(location2)
-                .build();
-        reviewRepository.save(review4);
+//        Review review4 = Review.builder()
+//                .username("재현")
+//                .rating(2L)
+//                .text("백보드가 너무 잘 튕겨서 별로....")
+//                .date("2024-12-11")
+//                .user(user1)
+//                .location(location2)
+//                .build();
+//        reviewRepository.save(review4);
 
         Review review5 = Review.builder()
-                .username("keedongmon")
+                .username("동언")
                 .rating(5L)
-                .text("i want to play here")
+                .text("시간가는 줄 모르고 농구함.")
                 .date("2024-11-02")
                 .user(user4)
                 .location(location3)
@@ -158,9 +158,9 @@ public class MakeInitData {
         reviewRepository.save(review5);
 
         Review review6 = Review.builder()
-                .username("minseo")
+                .username("민서")
                 .rating(5L)
-                .text("i want to go home.")
+                .text("농구 처음하는데 재밌었다.")
                 .date("2024-5-02")
                 .user(user5)
                 .location(location3)

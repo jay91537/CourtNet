@@ -6,7 +6,6 @@ import com.dbcourtnet.user.User;
 import com.dbcourtnet.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -44,4 +43,15 @@ public class LoginService {
         return user;
     }
 
+    public Optional<User> getLoginUserById(Long userId) {
+
+        if(userId == null) {
+            return null;
+        }
+
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if(optionalUser.isEmpty()) return null;
+
+        return Optional.of(optionalUser.get());
+    }
 }

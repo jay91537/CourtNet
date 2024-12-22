@@ -9,6 +9,7 @@ import com.dbcourtnet.login.LoginController;
 import com.dbcourtnet.login.LoginService;
 import com.dbcourtnet.review.Review;
 import com.dbcourtnet.review.ReviewService;
+import jdk.jfr.MemoryAddress;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,7 +28,7 @@ public class LocationController {
     private final ReviewService reviewService;
 
     @GetMapping(value = "")
-    public String findLocationPage(Model model) {
+    public String findLocationPage(@CookieValue(name = "userId", required = true) Long userId, Model model) {
         model.addAttribute("controllerLocationRequest", new ControllerLocationRequestDTO());
         return "findLocation";
     }
@@ -43,12 +44,13 @@ public class LocationController {
     }
 
     @GetMapping("/location/{id}")
-    public String locationDetail(@PathVariable Long id, Model model) {
+    public String locationDetail(@CookieValue (name = "userId", required = true) Long userId, @PathVariable Long id, Model model) {
         Optional<Location> location = locationService.findLocationById(id);
 
         List<CourtTexture> courtTextures = courtService.findCourtTextures(id);
         List<Review> reviewList = reviewService.findAllByLocationId(id);
 
+        model.addAttribute("userId", userId);
         model.addAttribute("location", location);
         model.addAttribute("courtTextures", courtTextures);
         model.addAttribute("reviewList", reviewList);
