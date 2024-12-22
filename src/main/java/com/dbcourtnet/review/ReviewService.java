@@ -20,17 +20,23 @@ public class ReviewService {
     private final UserRepository userRepository;
     private final LocationRepository locationRepository;
 
-    @Transactional
-    public void createReview(ReviewRequestDTO reviewRequest) {
+    // 리뷰 생성
+    public void join(ReviewRequestDTO reviewRequest) {
 
-        Optional<User> user = Optional.ofNullable(userRepository.findById(reviewRequest.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 유저가 없습니다.")));
 
-        Optional<Location> location = Optional.ofNullable(locationRepository.findById(reviewRequest.getLocationId())
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 구장이 없습니다.")));
 
-        Review review = reviewRequest.toEntity(user, location);
 
+        if(reviewRequest.getUserId()==null){
+            throw new IllegalArgumentException("유저가 존재하지 않습니다.");
+        }
+        if(reviewRequest.getLocationId()==null){
+            throw new IllegalArgumentException("구장이 존재하지 않습니다.");
+        }
+
+        User user = userRepository.findById(reviewRequest.getUserId()).orElseThrow(() -> new IllegalArgumentException("유저가 존재하지 않습니다."));
+        Location location = locationRepository.findById(reviewRequest.getLocationId()).orElseThrow(() -> new IllegalArgumentException("구장이 존재하지 않습니다."));
+
+        Review review = reviewRequest.toEntity(user,location);
         reviewRepository.save(review);
     }
 
@@ -89,5 +95,15 @@ public class ReviewService {
             throw new IllegalArgumentException("유저가 존재하지 않습니다.");
         }
 
+    }
+
+
+    public List<Review> findAllByUserId(Long userId) {
+
+        if(userId == null){
+            throw new IllegalArgumentException("존재하지 않는 유저입니다.");
+        }
+
+        return reviewRepository.findAllByUserId(userId);
     }
 }

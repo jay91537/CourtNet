@@ -4,10 +4,13 @@ import com.dbcourtnet.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Optional;
+
 @Entity
 @NoArgsConstructor
 @Builder
 @Getter
+@Setter
 @AllArgsConstructor
 public class Review {
 

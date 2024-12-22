@@ -3,6 +3,8 @@ package com.dbcourtnet.login;
 import com.dbcourtnet.login.dto.JoinRequestDTO;
 import com.dbcourtnet.login.dto.LoginRequestDTO;
 import com.dbcourtnet.user.User;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -10,6 +12,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -19,20 +23,15 @@ public class LoginController {
 
     // 로그이 되기 전 home 화면
     @GetMapping(value = {"/home"})
-    public String home(Model model) {
+    public String home(@CookieValue(name = "userId", required = false) Long userId, Model model) {
 
+        Optional<User> loginUser = loginService.getLoginUserById(userId);
 
+        if(loginUser != null) {
+            model.addAttribute("username", loginUser.get().getUsername());
+        }
 
         return "home";
-    }
-
-    // 로그인 된 후 home 화면
-    @GetMapping(value = {"/home2"})
-    public String home2(Model model) {
-
-
-
-        return "home2";
     }
 
     // 회원가입 화면
@@ -66,7 +65,7 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String login(@ModelAttribute LoginRequestDTO loginRequest) throws Exception {
+    public String login(@ModelAttribute LoginRequestDTO loginRequest, HttpServletResponse response) throws Exception {
 
         User user = loginService.login(loginRequest);
 
@@ -74,7 +73,20 @@ public class LoginController {
             throw new Exception("아이디 혹은 비밀번호가 일치하지 않습니다.");
         }
 
-        return "redirect:/home2";
+        // 로그인 성공 => 쿠키 생성
+        Cookie cookie = new Cookie("userId", String.valueOf(user.getId()));
+        cookie.setMaxAge(60 * 60);  // 쿠키 유효 시간 : 1시간
+        response.addCookie(cookie);
+
+        return "redirect:/home";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpServletResponse response) {
+        Cookie cookie = new Cookie("userId", null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        return "redirect:/home";
     }
 
 

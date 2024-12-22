@@ -4,10 +4,12 @@ import com.dbcourtnet.location.Location;
 import com.dbcourtnet.review.Review;
 import com.dbcourtnet.user.User;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Optional;
 
 @Getter
+@Setter
 public class ReviewRequestDTO {
 
     private Long userId;
@@ -22,18 +24,14 @@ public class ReviewRequestDTO {
 
     private String date;
 
-    private User user;
-
-    private Location location;
-
-    public Review toEntity(Optional<User> user, Optional<Location> location) {
+    public Review toEntity(User user, Location location) {
         return Review.builder()
                 .username(this.username)
+                .date(this.date)
                 .rating(this.rating)
                 .text(this.text)
-                .date(this.date)
-                .user(this.user)
-                .location(this.location)
+                .user(user)
+                .location(location)
                 .build();
     }
 
