@@ -32,7 +32,7 @@ public class MakeInitData {
         User user1 = User.builder()
                 .loginId("user1")
                 .password("1234")
-                .username("재현")
+                .username("정윤")
                 .gender(Gender.MALE)
                 .build();
         userRepository.save(user1);
@@ -108,7 +108,7 @@ public class MakeInitData {
         // 리뷰 하드코딩
 
         Review review1 = Review.builder()
-                .username("재현")
+                .username(user1.getUsername())
                 .rating(5L)
                 .text("농구하지 제일 좋은 곳입니다~")
                 .date("2024-12-01")
@@ -118,7 +118,7 @@ public class MakeInitData {
         reviewRepository.save(review1);
 
         Review review2 = Review.builder()
-                .username("민지")
+                .username(user2.getUsername())
                 .rating(4L)
                 .text("재현이랑 같이 농구하니까 좋았어요~")
                 .date("2024-12-02")
@@ -128,7 +128,7 @@ public class MakeInitData {
         reviewRepository.save(review2);
 
         Review review3 = Review.builder()
-                .username("문군")
+                .username(user3.getUsername())
                 .rating(3L)
                 .text("농구하기 딱좋음")
                 .date("2024-12-05")
@@ -138,7 +138,7 @@ public class MakeInitData {
         reviewRepository.save(review3);
 
         Review review4 = Review.builder()
-                .username("재현")
+                .username(user1.getUsername())
                 .rating(2L)
                 .text("백보드가 너무 잘 튕겨서 별로....")
                 .date("2024-12-11")
@@ -148,7 +148,7 @@ public class MakeInitData {
         reviewRepository.save(review4);
 
         Review review5 = Review.builder()
-                .username("동언")
+                .username(user4.getUsername())
                 .rating(5L)
                 .text("시간가는 줄 모르고 농구함.")
                 .date("2024-11-02")
@@ -158,7 +158,7 @@ public class MakeInitData {
         reviewRepository.save(review5);
 
         Review review6 = Review.builder()
-                .username("민서")
+                .username(user5.getUsername())
                 .rating(5L)
                 .text("농구 처음하는데 재밌었다.")
                 .date("2024-5-02")
