@@ -2,8 +2,11 @@ package com.dbcourtnet.login;
 
 import com.dbcourtnet.login.dto.JoinRequestDTO;
 import com.dbcourtnet.login.dto.LoginRequestDTO;
+import com.dbcourtnet.login.session.SessionConst;
+import com.dbcourtnet.login.session.SessionManager;
 import com.dbcourtnet.user.User;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,14 +23,19 @@ import java.util.Optional;
 public class LoginController {
 
     private final LoginService loginService;
+    private final SessionManager sessionManager;
 
-    // 로그이 되기 전 home 화면
+    // 로그이 되기 전 home 화면 (세션 로그인)
     @GetMapping(value = {"/home"})
-    public String home(@CookieValue(name = "userId", required = false) Long userId, Model model) {
+    public String home( HttpServletRequest request , Model model) {
 
+        Long userId = sessionManager.getSession(request);
+        if(userId == null) {
+            return "home";
+        }
         Optional<User> loginUser = loginService.getLoginUserById(userId);
 
-        if(loginUser != null) {
+        if(loginUser!=null) {
             model.addAttribute("username", loginUser.get().getUsername());
         }
 
@@ -73,19 +81,22 @@ public class LoginController {
             throw new Exception("아이디 혹은 비밀번호가 일치하지 않습니다.");
         }
 
-        // 로그인 성공 => 쿠키 생성
-        Cookie cookie = new Cookie("userId", String.valueOf(user.getId()));
-        cookie.setMaxAge(60 * 60);  // 쿠키 유효 시간 : 1시간
-        response.addCookie(cookie);
+        // 올바른 로그인이 진행 될 경우, 세션을 생성한다.
+        sessionManager.createSession((user.getId()), response);
 
         return "redirect:/home";
     }
 
     @GetMapping("/logout")
-    public String logout(HttpServletResponse response) {
-        Cookie cookie = new Cookie("userId", null);
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
+
+        sessionManager.sessionExpire(request);
+
+        // 2. 브라우저의 쿠키도 삭제
+        Cookie cookie = new Cookie(SessionConst.sessionId, null);
         cookie.setMaxAge(0);
         response.addCookie(cookie);
+
         return "redirect:/home";
     }
 
