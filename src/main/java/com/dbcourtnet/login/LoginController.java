@@ -101,12 +101,19 @@ public class LoginController {
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
 
-        sessionManager.sessionExpire(request);
+        HttpSession session = request.getSession(false);
+        if(session == null) { //(2)
+            return "redirect:/home"; //(2)
+        }
+
+        // sessionManager.sessionExpire(request);
+
+        session.invalidate();
 
         // 2. 브라우저의 쿠키도 삭제
-        Cookie cookie = new Cookie(SessionConst.sessionId, null);
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
+//        Cookie cookie = new Cookie(SessionConst.sessionId, null);
+//        cookie.setMaxAge(0);
+//        response.addCookie(cookie);
 
         return "redirect:/home";
     }

@@ -2,10 +2,12 @@ package com.dbcourtnet.review;
 
 import com.dbcourtnet.court.CourtService;
 import com.dbcourtnet.location.LocationService;
+import com.dbcourtnet.login.session.SessionConst;
 import com.dbcourtnet.login.session.SessionManager;
 import com.dbcourtnet.review.dto.ReviewRequestDTO;
 import com.dbcourtnet.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,12 +29,17 @@ public class ReviewController {
     public String createReviewPage(HttpServletRequest request,
                                    @ModelAttribute ReviewRequestDTO reviewRequest, @PathVariable Long locationId, Model model) {
 
-        if(sessionManager.getSession(request)==null) {
-            return "/home";
+        HttpSession session = request.getSession(false);
+        if(session == null){
+            return "home";
         }
 
+//        if(sessionManager.getSession(request)==null) {
+//            return "/home";
+//        }
+
         reviewRequest.setLocationId(locationId);
-        model.addAttribute("username", userService.findById(sessionManager.getSession(request)).get().getUsername());
+        model.addAttribute("username", userService.findById((Long) session.getAttribute(SessionConst.sessionId)).get().getUsername());
         model.addAttribute("reviewRequest", reviewRequest);
 
         return "/review";
@@ -42,8 +49,13 @@ public class ReviewController {
     public String createReview(HttpServletRequest request,@ModelAttribute ReviewRequestDTO reviewRequest,
                                @PathVariable Long locationId, Model model) {
 
-        reviewRequest.setUserId(sessionManager.getSession(request));
-        reviewRequest.setUsername(userService.findById(sessionManager.getSession(request)).get().getUsername());
+        HttpSession session = request.getSession(false);
+        if(session == null){
+            return "home";
+        }
+
+        reviewRequest.setUserId((Long) session.getAttribute(SessionConst.sessionId));
+        reviewRequest.setUsername(userService.findById((Long) session.getAttribute(SessionConst.sessionId)).get().getUsername());
         reviewService.join(reviewRequest);
 
         return "redirect:/findLocation/location/{locationId}";
@@ -52,11 +64,16 @@ public class ReviewController {
     @GetMapping(value = "/home/myReview")
     public String getMyReview(HttpServletRequest request, Model model) {
 
-        if(sessionManager.getSession(request)==null) {
-            return "/home";
+        HttpSession session = request.getSession(false);
+        if(session == null){
+            return "home";
         }
 
-        List<Review> reviewList = reviewService.findAllByUserId(sessionManager.getSession(request));
+//        if(sessionManager.getSession(request)==null) {
+//            return "/home";
+//        }
+
+        List<Review> reviewList = reviewService.findAllByUserId((Long) session.getAttribute(SessionConst.sessionId));
 
         model.addAttribute("reviewList", reviewList);
         return "/myReview";
@@ -68,15 +85,20 @@ public class ReviewController {
                                  @PathVariable Long reviewId,
                                  Model model) {
 
-        if(sessionManager.getSession(request)==null) {
-            return "/home";
+        HttpSession session = request.getSession(false);
+        if(session == null){
+            return "home";
         }
+
+//        if(sessionManager.getSession(request)==null) {
+//            return "/home";
+//        }
 
         Review review = reviewService.findById(reviewId)
                 .orElseThrow(() -> new IllegalArgumentException("리뷰가 존재하지 않습니다."));
 
 
-        if (!review.getUser().getId().equals(sessionManager.getSession(request))) {
+        if (!review.getUser().getId().equals((Long) session.getAttribute(SessionConst.sessionId))) {
             throw new IllegalArgumentException("리뷰 수정 권한이 없습니다.");
         }
 
@@ -98,11 +120,16 @@ public class ReviewController {
                              @PathVariable Long reviewId,
                              @ModelAttribute ReviewRequestDTO reviewRequest) {
 
-        if(sessionManager.getSession(request)==null) {
-            return "/home";
+        HttpSession session = request.getSession(false);
+        if(session == null){
+            return "home";
         }
 
-        reviewRequest.setUserId(sessionManager.getSession(request));
+//        if(sessionManager.getSession(request)==null) {
+//            return "/home";
+//        }
+
+        reviewRequest.setUserId((Long) session.getAttribute(SessionConst.sessionId));
         reviewService.updateReview(reviewId, reviewRequest);
 
         return "redirect:/findLocation/location/" + locationId;
@@ -113,12 +140,17 @@ public class ReviewController {
                                @PathVariable Long locationId,
                                @PathVariable Long reviewId) {
 
-        if(sessionManager.getSession(request)==null) {
-            return "/home";
+        HttpSession session = request.getSession(false);
+        if(session == null){
+            return "home";
         }
 
+//        if(sessionManager.getSession(request)==null) {
+//            return "/home";
+//        }
+
         try {
-            reviewService.deleteReview(reviewId, sessionManager.getSession(request));
+            reviewService.deleteReview(reviewId, (Long) session.getAttribute(SessionConst.sessionId));
             return "redirect:/findLocation/location/" + locationId;
         } catch (IllegalArgumentException e) {
 

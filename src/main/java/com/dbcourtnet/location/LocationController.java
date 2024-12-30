@@ -7,10 +7,12 @@ import com.dbcourtnet.location.dto.ControllerLocationRequestDTO;
 import com.dbcourtnet.location.dto.LocationResponseDTO;
 import com.dbcourtnet.login.LoginController;
 import com.dbcourtnet.login.LoginService;
+import com.dbcourtnet.login.session.SessionConst;
 import com.dbcourtnet.login.session.SessionManager;
 import com.dbcourtnet.review.Review;
 import com.dbcourtnet.review.ReviewService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jdk.jfr.MemoryAddress;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -33,9 +35,14 @@ public class LocationController {
     @GetMapping(value = "")
     public String findLocationPage(HttpServletRequest request, Model model) {
 
-        if(sessionManager.getSession(request)==null) {
-            return "/home";
+        HttpSession session = request.getSession(false);
+        if(session == null){
+            return "home";
         }
+
+//        if(sessionManager.getSession(request)==null) {
+//            return "/home";
+//        }
 
         model.addAttribute("controllerLocationRequest", new ControllerLocationRequestDTO());
         return "findLocation";
@@ -44,9 +51,14 @@ public class LocationController {
     @PostMapping("")
     public String findLocation(HttpServletRequest request ,@ModelAttribute ControllerLocationRequestDTO controllerLocationRequest, Model model) {
 
-        if(sessionManager.getSession(request)==null) {
-            return "/home";
+        HttpSession session = request.getSession(false);
+        if(session == null){
+            return "home";
         }
+
+//        if(sessionManager.getSession(request)==null) {
+//            return "/home";
+//        }
 
         List<Location> locationList = locationService.findByAddress(controllerLocationRequest.getAddress());
         model.addAttribute("locationList", locationList);
@@ -58,16 +70,22 @@ public class LocationController {
     @GetMapping("/location/{id}")
     public String locationDetail(HttpServletRequest request, @PathVariable Long id, Model model) {
 
-        if(sessionManager.getSession(request)==null) {
-            return "/home";
+        HttpSession session = request.getSession(false);
+        if(session == null){
+            return "home";
         }
+
+//        if(sessionManager.getSession(request)==null) {
+//            return "/home";
+//        }
 
         Optional<Location> location = locationService.findLocationById(id);
 
         List<CourtTexture> courtTextures = courtService.findCourtTextures(id);
         List<Review> reviewList = reviewService.findAllByLocationId(id);
 
-        model.addAttribute("userId", sessionManager.getSession(request));
+
+        model.addAttribute("userId", session.getAttribute(SessionConst.sessionId));
         model.addAttribute("location", location);
         model.addAttribute("courtTextures", courtTextures);
         model.addAttribute("reviewList", reviewList);
