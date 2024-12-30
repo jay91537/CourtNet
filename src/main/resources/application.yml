@@ -10,7 +10,3 @@ spring:
     hibernate:
       ddl-auto: create-drop
     show-sql: true
-server:
-  servlet:
-    session:
-      timeout: 30m

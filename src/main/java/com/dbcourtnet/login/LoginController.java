@@ -91,6 +91,7 @@ public class LoginController {
 
         HttpSession session = request.getSession();
         session.setAttribute(SessionConst.sessionId, user.getId());
+        session.setMaxInactiveInterval(60);
 
         // 올바른 로그인이 진행 될 경우, 세션을 생성한다.
         // sessionManager.createSession((user.getId()), response);
