@@ -8,6 +8,7 @@ import com.dbcourtnet.user.User;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -29,7 +30,14 @@ public class LoginController {
     @GetMapping(value = {"/home"})
     public String home( HttpServletRequest request , Model model) {
 
-        Long userId = sessionManager.getSession(request);
+        HttpSession session = request.getSession(false);
+        if(session == null){
+            return "home";
+        }
+
+
+        Long userId = (Long)session.getAttribute(SessionConst.sessionId);
+        // Long userId = sessionManager.getSession(request);
         if(userId == null) {
             return "home";
         }
@@ -73,7 +81,7 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String login(@ModelAttribute LoginRequestDTO loginRequest, HttpServletResponse response) throws Exception {
+    public String login(@ModelAttribute LoginRequestDTO loginRequest, HttpServletRequest request,HttpServletResponse response) throws Exception {
 
         User user = loginService.login(loginRequest);
 
@@ -81,8 +89,11 @@ public class LoginController {
             throw new Exception("아이디 혹은 비밀번호가 일치하지 않습니다.");
         }
 
+        HttpSession session = request.getSession();
+        session.setAttribute(SessionConst.sessionId, user.getId());
+
         // 올바른 로그인이 진행 될 경우, 세션을 생성한다.
-        sessionManager.createSession((user.getId()), response);
+        // sessionManager.createSession((user.getId()), response);
 
         return "redirect:/home";
     }
