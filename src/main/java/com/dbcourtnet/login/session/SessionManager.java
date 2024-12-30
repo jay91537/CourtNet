@@ -13,8 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class SessionManager {
 
-    // 세션 DB의 역할 수행
-
+    // store는 세션 DB의 역할 수행
     private static Map<String, Long> store = new ConcurrentHashMap<>();
 
     public void createSession(Long value, HttpServletResponse response) {
