@@ -2,7 +2,7 @@ package com.dbcourtnet.review;
 
 import com.dbcourtnet.location.Location;
 import com.dbcourtnet.location.LocationRepository;
-import com.dbcourtnet.review.dto.ReviewRequestDTO;
+import com.dbcourtnet.dto.reviewdto.ReviewRequestDTO;
 import com.dbcourtnet.user.User;
 import com.dbcourtnet.user.UserRepository;
 import lombok.RequiredArgsConstructor;

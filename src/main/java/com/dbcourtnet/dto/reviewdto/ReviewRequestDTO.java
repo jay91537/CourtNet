@@ -1,12 +1,10 @@
-package com.dbcourtnet.review.dto;
+package com.dbcourtnet.dto.reviewdto;
 
 import com.dbcourtnet.location.Location;
 import com.dbcourtnet.review.Review;
 import com.dbcourtnet.user.User;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.Optional;
 
 @Getter
 @Setter

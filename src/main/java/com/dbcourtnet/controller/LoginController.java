@@ -1,11 +1,11 @@
-package com.dbcourtnet.login;
+package com.dbcourtnet.controller;
 
-import com.dbcourtnet.login.dto.JoinRequestDTO;
-import com.dbcourtnet.login.dto.LoginRequestDTO;
+import com.dbcourtnet.login.LoginService;
+import com.dbcourtnet.dto.logindto.JoinRequestDTO;
+import com.dbcourtnet.dto.logindto.LoginRequestDTO;
 import com.dbcourtnet.login.session.SessionConst;
 import com.dbcourtnet.login.session.SessionManager;
 import com.dbcourtnet.user.User;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -28,15 +28,14 @@ public class LoginController {
 
     // 로그이 되기 전 home 화면 (세션 로그인)
     @GetMapping(value = {"/home"})
-    public String home( HttpServletRequest request , Model model) {
+    public String home( HttpServletRequest request, @SessionAttribute(name = SessionConst.sessionId, required = false) Long userId, Model model) {
 
-        HttpSession session = request.getSession(false);
-        if(session == null){
-            return "home";
-        }
+//        HttpSession session = request.getSession(false);
+//        if(session == null){
+//            return "home";
+//        }
 
-
-        Long userId = (Long)session.getAttribute(SessionConst.sessionId);
+        // Long userId = (Long)session.getAttribute(SessionConst.sessionId);
         // Long userId = sessionManager.getSession(request);
         if(userId == null) {
             return "home";
@@ -81,7 +80,7 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String login(@ModelAttribute LoginRequestDTO loginRequest, HttpServletRequest request,HttpServletResponse response) throws Exception {
+    public String login(@ModelAttribute LoginRequestDTO loginRequest, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         User user = loginService.login(loginRequest);
 
@@ -100,16 +99,20 @@ public class LoginController {
     }
 
     @GetMapping("/logout")
-    public String logout(HttpServletRequest request, HttpServletResponse response) {
+    public String logout(HttpServletRequest request, @SessionAttribute(name = SessionConst.sessionId, required = false) Long userId,HttpServletResponse response) {
 
-        HttpSession session = request.getSession(false);
-        if(session == null) { //(2)
-            return "redirect:/home"; //(2)
+        if(userId == null) {
+            return "home";
         }
+
+//        HttpSession session = request.getSession(false);
+//        if(session == null) {
+//            return "redirect:/home";
+//        }
 
         // sessionManager.sessionExpire(request);
 
-        session.invalidate();
+        request.getSession().invalidate();
 
         // 2. 브라우저의 쿠키도 삭제
 //        Cookie cookie = new Cookie(SessionConst.sessionId, null);
