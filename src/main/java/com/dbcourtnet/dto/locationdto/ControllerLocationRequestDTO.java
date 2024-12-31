@@ -1,6 +1,5 @@
-package com.dbcourtnet.location.dto;
+package com.dbcourtnet.dto.locationdto;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 

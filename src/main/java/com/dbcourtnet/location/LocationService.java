@@ -1,6 +1,6 @@
 package com.dbcourtnet.location;
 
-import com.dbcourtnet.location.dto.LocationRequestDTO;
+import com.dbcourtnet.dto.locationdto.LocationRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

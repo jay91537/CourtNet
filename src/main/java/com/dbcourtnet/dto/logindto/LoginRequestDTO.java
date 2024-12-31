@@ -1,4 +1,4 @@
-package com.dbcourtnet.login.dto;
+package com.dbcourtnet.dto.logindto;
 
 import lombok.Getter;
 import lombok.Setter;

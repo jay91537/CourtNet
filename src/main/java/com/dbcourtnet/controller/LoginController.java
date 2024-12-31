@@ -1,10 +1,13 @@
-package com.dbcourtnet.login;
+package com.dbcourtnet.controller;
 
-import com.dbcourtnet.login.dto.JoinRequestDTO;
-import com.dbcourtnet.login.dto.LoginRequestDTO;
+import com.dbcourtnet.login.LoginService;
+import com.dbcourtnet.dto.logindto.JoinRequestDTO;
+import com.dbcourtnet.dto.logindto.LoginRequestDTO;
+import com.dbcourtnet.login.session.SessionConst;
 import com.dbcourtnet.user.User;
-import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -21,13 +24,16 @@ public class LoginController {
 
     private final LoginService loginService;
 
-    // 로그이 되기 전 home 화면
+    // 로그이 되기 전 home 화면 (세션 로그인)
     @GetMapping(value = {"/home"})
-    public String home(@CookieValue(name = "userId", required = false) Long userId, Model model) {
+    public String home( HttpServletRequest request, @SessionAttribute(name = SessionConst.sessionId, required = false) Long userId, Model model) {
 
+        if(userId == null) {
+            return "home";
+        }
         Optional<User> loginUser = loginService.getLoginUserById(userId);
 
-        if(loginUser != null) {
+        if(loginUser!=null) {
             model.addAttribute("username", loginUser.get().getUsername());
         }
 
@@ -65,7 +71,7 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String login(@ModelAttribute LoginRequestDTO loginRequest, HttpServletResponse response) throws Exception {
+    public String login(@ModelAttribute LoginRequestDTO loginRequest, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         User user = loginService.login(loginRequest);
 
@@ -73,19 +79,22 @@ public class LoginController {
             throw new Exception("아이디 혹은 비밀번호가 일치하지 않습니다.");
         }
 
-        // 로그인 성공 => 쿠키 생성
-        Cookie cookie = new Cookie("userId", String.valueOf(user.getId()));
-        cookie.setMaxAge(60 * 60);  // 쿠키 유효 시간 : 1시간
-        response.addCookie(cookie);
+        HttpSession session = request.getSession();
+        session.setAttribute(SessionConst.sessionId, user.getId());
+        session.setMaxInactiveInterval(60);
 
         return "redirect:/home";
     }
 
     @GetMapping("/logout")
-    public String logout(HttpServletResponse response) {
-        Cookie cookie = new Cookie("userId", null);
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
+    public String logout(HttpServletRequest request, @SessionAttribute(name = SessionConst.sessionId, required = false) Long userId,HttpServletResponse response) {
+
+        if(userId == null) {
+            return "home";
+        }
+
+        request.getSession().invalidate();
+
         return "redirect:/home";
     }
 

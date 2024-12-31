@@ -1,11 +1,10 @@
-package com.dbcourtnet.login.dto;
+package com.dbcourtnet.dto.logindto;
 
 
 import com.dbcourtnet.user.Gender;
 import com.dbcourtnet.user.User;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter

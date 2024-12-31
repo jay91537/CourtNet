@@ -1,7 +1,7 @@
 package com.dbcourtnet.login;
 
-import com.dbcourtnet.login.dto.JoinRequestDTO;
-import com.dbcourtnet.login.dto.LoginRequestDTO;
+import com.dbcourtnet.dto.logindto.JoinRequestDTO;
+import com.dbcourtnet.dto.logindto.LoginRequestDTO;
 import com.dbcourtnet.user.User;
 import com.dbcourtnet.user.UserRepository;
 import lombok.RequiredArgsConstructor;
