@@ -4,7 +4,6 @@ import com.dbcourtnet.login.LoginService;
 import com.dbcourtnet.dto.logindto.JoinRequestDTO;
 import com.dbcourtnet.dto.logindto.LoginRequestDTO;
 import com.dbcourtnet.login.session.SessionConst;
-import com.dbcourtnet.login.session.SessionManager;
 import com.dbcourtnet.user.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -24,19 +23,11 @@ import java.util.Optional;
 public class LoginController {
 
     private final LoginService loginService;
-    private final SessionManager sessionManager;
 
     // 로그이 되기 전 home 화면 (세션 로그인)
     @GetMapping(value = {"/home"})
     public String home( HttpServletRequest request, @SessionAttribute(name = SessionConst.sessionId, required = false) Long userId, Model model) {
 
-//        HttpSession session = request.getSession(false);
-//        if(session == null){
-//            return "home";
-//        }
-
-        // Long userId = (Long)session.getAttribute(SessionConst.sessionId);
-        // Long userId = sessionManager.getSession(request);
         if(userId == null) {
             return "home";
         }
@@ -92,9 +83,6 @@ public class LoginController {
         session.setAttribute(SessionConst.sessionId, user.getId());
         session.setMaxInactiveInterval(60);
 
-        // 올바른 로그인이 진행 될 경우, 세션을 생성한다.
-        // sessionManager.createSession((user.getId()), response);
-
         return "redirect:/home";
     }
 
@@ -105,19 +93,7 @@ public class LoginController {
             return "home";
         }
 
-//        HttpSession session = request.getSession(false);
-//        if(session == null) {
-//            return "redirect:/home";
-//        }
-
-        // sessionManager.sessionExpire(request);
-
         request.getSession().invalidate();
-
-        // 2. 브라우저의 쿠키도 삭제
-//        Cookie cookie = new Cookie(SessionConst.sessionId, null);
-//        cookie.setMaxAge(0);
-//        response.addCookie(cookie);
 
         return "redirect:/home";
     }

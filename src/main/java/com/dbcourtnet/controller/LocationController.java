@@ -6,7 +6,6 @@ import com.dbcourtnet.location.Location;
 import com.dbcourtnet.location.LocationService;
 import com.dbcourtnet.dto.locationdto.ControllerLocationRequestDTO;
 import com.dbcourtnet.login.session.SessionConst;
-import com.dbcourtnet.login.session.SessionManager;
 import com.dbcourtnet.review.Review;
 import com.dbcourtnet.review.ReviewService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,7 +25,6 @@ public class LocationController {
     private final LocationService locationService;
     private final CourtService courtService;
     private final ReviewService reviewService;
-    private final SessionManager sessionManager;
 
     @GetMapping(value = "")
     public String findLocationPage(HttpServletRequest request,@SessionAttribute(name = SessionConst.sessionId, required = false) Long userId, Model model) {
@@ -34,15 +32,6 @@ public class LocationController {
         if(userId == null) {
             return "home";
         }
-
-//        HttpSession session = request.getSession(false);
-//        if(session == null){
-//            return "home";
-//        }
-
-//        if(sessionManager.getSession(request)==null) {
-//            return "/home";
-//        }
 
         model.addAttribute("controllerLocationRequest", new ControllerLocationRequestDTO());
         return "findLocation";
@@ -55,15 +44,6 @@ public class LocationController {
         if(userId == null) {
             return "home";
         }
-
-//        HttpSession session = request.getSession(false);
-//        if(session == null){
-//            return "home";
-//        }
-
-//        if(sessionManager.getSession(request)==null) {
-//            return "/home";
-//        }
 
         List<Location> locationList = locationService.findByAddress(controllerLocationRequest.getAddress());
         model.addAttribute("locationList", locationList);
@@ -78,15 +58,6 @@ public class LocationController {
         if(userId == null) {
             return "home";
         }
-
-//        HttpSession session = request.getSession(false);
-//        if(session == null){
-//            return "home";
-//        }
-
-//        if(sessionManager.getSession(request)==null) {
-//            return "/home";
-//        }
 
         Optional<Location> location = locationService.findLocationById(id);
 

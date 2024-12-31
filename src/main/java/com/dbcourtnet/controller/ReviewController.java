@@ -3,7 +3,6 @@ package com.dbcourtnet.controller;
 import com.dbcourtnet.court.CourtService;
 import com.dbcourtnet.location.LocationService;
 import com.dbcourtnet.login.session.SessionConst;
-import com.dbcourtnet.login.session.SessionManager;
 import com.dbcourtnet.review.Review;
 import com.dbcourtnet.review.ReviewService;
 import com.dbcourtnet.dto.reviewdto.ReviewRequestDTO;
@@ -24,7 +23,6 @@ public class ReviewController {
     private final LocationService locationService;
     private final UserService userService;
     private final CourtService courtService;
-    private final SessionManager sessionManager;
 
     @GetMapping(value = "/findLocation/location/{locationId}/review")
     public String createReviewPage(HttpServletRequest request,
@@ -34,15 +32,6 @@ public class ReviewController {
         if(userId == null) {
             return "home";
         }
-
-//        HttpSession session = request.getSession(false);
-//        if(session == null){
-//            return "home";
-//        }
-
-//        if(sessionManager.getSession(request)==null) {
-//            return "/home";
-//        }
 
         reviewRequest.setLocationId(locationId);
         model.addAttribute("username", userService.findById((Long) request.getSession().getAttribute(SessionConst.sessionId)).get().getUsername());
@@ -60,11 +49,6 @@ public class ReviewController {
             return "home";
         }
 
-//        HttpSession session = request.getSession(false);
-//        if(session == null){
-//            return "home";
-//        }
-
         reviewRequest.setUserId((Long) request.getSession().getAttribute(SessionConst.sessionId));
         reviewRequest.setUsername(userService.findById((Long) request.getSession().getAttribute(SessionConst.sessionId)).get().getUsername());
         reviewService.join(reviewRequest);
@@ -78,15 +62,6 @@ public class ReviewController {
         if(userId == null) {
             return "home";
         }
-
-//        HttpSession session = request.getSession(false);
-//        if(session == null){
-//            return "home";
-//        }
-
-//        if(sessionManager.getSession(request)==null) {
-//            return "/home";
-//        }
 
         List<Review> reviewList = reviewService.findAllByUserId((Long) request.getSession().getAttribute(SessionConst.sessionId));
 
@@ -104,15 +79,6 @@ public class ReviewController {
         if(userId == null) {
             return "home";
         }
-
-//        HttpSession session = request.getSession(false);
-//        if(session == null){
-//            return "home";
-//        }
-
-//        if(sessionManager.getSession(request)==null) {
-//            return "/home";
-//        }
 
         Review review = reviewService.findById(reviewId)
                 .orElseThrow(() -> new IllegalArgumentException("리뷰가 존재하지 않습니다."));
@@ -145,15 +111,6 @@ public class ReviewController {
             return "home";
         }
 
-//        HttpSession session = request.getSession(false);
-//        if(session == null){
-//            return "home";
-//        }
-
-//        if(sessionManager.getSession(request)==null) {
-//            return "/home";
-//        }
-
         reviewRequest.setUserId((Long) request.getSession().getAttribute(SessionConst.sessionId));
         reviewService.updateReview(reviewId, reviewRequest);
 
@@ -169,15 +126,6 @@ public class ReviewController {
         if(userId == null) {
             return "home";
         }
-
-//        HttpSession session = request.getSession(false);
-//        if(session == null){
-//            return "home";
-//        }
-
-//        if(sessionManager.getSession(request)==null) {
-//            return "/home";
-//        }
 
         try {
             reviewService.deleteReview(reviewId, (Long) request.getSession().getAttribute(SessionConst.sessionId));
