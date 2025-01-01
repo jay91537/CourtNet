@@ -2,6 +2,7 @@ package com.dbcourtnet.controller;
 
 import com.dbcourtnet.court.CourtService;
 import com.dbcourtnet.court.CourtTexture;
+import com.dbcourtnet.dto.locationdto.LocationResponseDTO;
 import com.dbcourtnet.location.Location;
 import com.dbcourtnet.location.LocationService;
 import com.dbcourtnet.dto.locationdto.ControllerLocationRequestDTO;
@@ -10,65 +11,60 @@ import com.dbcourtnet.review.Review;
 import com.dbcourtnet.review.ReviewService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/findLocation")
+@RequestMapping(value = "/api/findLocation")
 public class LocationController {
 
     private final LocationService locationService;
     private final CourtService courtService;
     private final ReviewService reviewService;
 
-    @GetMapping(value = "")
-    public String findLocationPage(HttpServletRequest request,@SessionAttribute(name = SessionConst.sessionId, required = false) Long userId, Model model) {
+    // 특정 장소의 모든 구장 검색
+    @GetMapping
+    public ResponseEntity<List<LocationResponseDTO>> searchLocations(@RequestParam(required = false) String address,
+                                                                     @SessionAttribute(name = SessionConst.sessionId, required = false) Long userId) {
 
         if(userId == null) {
-            return "home";
+            throw new IllegalArgumentException("로그인이 필요합니다.");
         }
 
-        model.addAttribute("controllerLocationRequest", new ControllerLocationRequestDTO());
-        return "findLocation";
+        List<Location> locations = locationService.findByAddress(address);
+
+        List<LocationResponseDTO> response = locations.stream()
+                .map(LocationResponseDTO::new)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok().body(response);
     }
 
-    @PostMapping("")
-    public String findLocation(HttpServletRequest request ,@SessionAttribute(name = SessionConst.sessionId, required = false) Long userId
-                                                            ,@ModelAttribute ControllerLocationRequestDTO controllerLocationRequest, Model model) {
+    // 검색한 장소의 세부사항
+    @GetMapping("/{locationid}")
+    public ResponseEntity<LocationResponseDTO> getLocationDetail(@PathVariable Long locationid,
+                                                                 @SessionAttribute(name = SessionConst.sessionId, required = false) Long userId) {
 
         if(userId == null) {
-            return "home";
+            throw new IllegalArgumentException("로그인이 필요합니다.");
         }
 
-        List<Location> locationList = locationService.findByAddress(controllerLocationRequest.getAddress());
-        model.addAttribute("locationList", locationList);
-        model.addAttribute("controllerLocationRequest", controllerLocationRequest);
+        Location location = locationService.findLocationById(locationid)
+                .orElseThrow(() -> new IllegalArgumentException("구장을 찾을 수 없습니다."));
 
-        return "/findLocation";
-    }
+        return ResponseEntity.ok(new LocationResponseDTO(
+                location,
+                courtService.findCourtTextures(location.getId()),
+                reviewService.findAllByLocationId(locationid)
+        ));
 
-    @GetMapping("/location/{id}")
-    public String locationDetail(HttpServletRequest request, @SessionAttribute(name = SessionConst.sessionId, required = false) Long userId,@PathVariable Long id, Model model) {
-
-        if(userId == null) {
-            return "home";
-        }
-
-        Optional<Location> location = locationService.findLocationById(id);
-
-        List<CourtTexture> courtTextures = courtService.findCourtTextures(id);
-        List<Review> reviewList = reviewService.findAllByLocationId(id);
-
-
-        model.addAttribute("userId", request.getSession().getAttribute(SessionConst.sessionId));
-        model.addAttribute("location", location);
-        model.addAttribute("courtTextures", courtTextures);
-        model.addAttribute("reviewList", reviewList);
-        return "/locationDetail";
     }
 }

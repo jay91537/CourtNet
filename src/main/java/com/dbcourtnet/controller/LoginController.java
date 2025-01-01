@@ -1,5 +1,6 @@
 package com.dbcourtnet.controller;
 
+import com.dbcourtnet.dto.logindto.LoginResponseDTO;
 import com.dbcourtnet.login.LoginService;
 import com.dbcourtnet.dto.logindto.JoinRequestDTO;
 import com.dbcourtnet.dto.logindto.LoginRequestDTO;
@@ -10,6 +11,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,86 +21,49 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
-@Controller
+@RestController
+@RequestMapping("/api/login")
 @RequiredArgsConstructor
 public class LoginController {
 
     private final LoginService loginService;
 
-    // 로그이 되기 전 home 화면 (세션 로그인)
-    @GetMapping(value = {"/home"})
-    public String home( HttpServletRequest request, @SessionAttribute(name = SessionConst.sessionId, required = false) Long userId, Model model) {
-
-        if(userId == null) {
-            return "home";
-        }
-        Optional<User> loginUser = loginService.getLoginUserById(userId);
-
-        if(loginUser!=null) {
-            model.addAttribute("username", loginUser.get().getUsername());
-        }
-
-        return "home";
-    }
-
-    // 회원가입 화면
-    @GetMapping("/join")
-    public String joinPage(Model model) {
-        model.addAttribute("joinRequest", new JoinRequestDTO());
-        return "join";
-    }
-
     @PostMapping("/join")
-    public String join(@Valid @ModelAttribute JoinRequestDTO joinRequest, BindingResult bindingResult) {
-
+    public ResponseEntity<Void> join(@Valid @RequestBody JoinRequestDTO joinRequest) {
         if(loginService.checkLoginIdDuplicate(joinRequest.getLoginId())) {
-            bindingResult.addError(new FieldError("joinRequest", "loginId", "로그인 아이디가 중복됩니다."));
-        }
-
-        if(bindingResult.hasErrors()) {
-            return "join";
+            throw new IllegalArgumentException("이미 존재하는 아이디 입니다.");
         }
 
         loginService.join(joinRequest);
-
-        return "redirect:/home";
-    }
-
-    // 로그인 화면
-    @GetMapping("/login")
-    public String loginPage(Model model) {
-        model.addAttribute("loginRequest", new LoginRequestDTO());
-        return "login";
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/login")
-    public String login(@ModelAttribute LoginRequestDTO loginRequest, HttpServletRequest request, HttpServletResponse response) throws Exception {
-
+    public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO loginRequest, HttpServletRequest request) {
         User user = loginService.login(loginRequest);
 
         if(user == null) {
-            throw new Exception("아이디 혹은 비밀번호가 일치하지 않습니다.");
+            throw new IllegalArgumentException("아이디 혹은 비밀번호가 일치하지 않습니다.");
         }
 
         HttpSession session = request.getSession();
         session.setAttribute(SessionConst.sessionId, user.getId());
-        session.setMaxInactiveInterval(60);
+        session.setMaxInactiveInterval(1800);
 
-        return "redirect:/home";
+        return ResponseEntity.ok(new LoginResponseDTO(user));
     }
 
     @GetMapping("/logout")
-    public String logout(HttpServletRequest request, @SessionAttribute(name = SessionConst.sessionId, required = false) Long userId,HttpServletResponse response) {
+    public ResponseEntity<Void> logout(@SessionAttribute(name = SessionConst.sessionId, required = false) Long userId,
+                                       HttpServletRequest request) {
 
         if(userId == null) {
-            return "home";
+            throw new IllegalArgumentException("로그인이 필요합니다.");
         }
 
         request.getSession().invalidate();
 
-        return "redirect:/home";
+        return ResponseEntity.ok().build();
     }
-
-
 
 }
