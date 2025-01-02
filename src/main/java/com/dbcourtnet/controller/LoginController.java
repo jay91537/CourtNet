@@ -1,6 +1,7 @@
 package com.dbcourtnet.controller;
 
 import com.dbcourtnet.dto.logindto.LoginResponseDTO;
+import com.dbcourtnet.jwt.JwtTokenProvider;
 import com.dbcourtnet.login.LoginService;
 import com.dbcourtnet.dto.logindto.JoinRequestDTO;
 import com.dbcourtnet.dto.logindto.LoginRequestDTO;
@@ -22,11 +23,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/login")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class LoginController {
 
     private final LoginService loginService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/join")
     public ResponseEntity<Void> join(@Valid @RequestBody JoinRequestDTO joinRequest) {
@@ -50,7 +52,9 @@ public class LoginController {
         session.setAttribute(SessionConst.sessionId, user.getId());
         session.setMaxInactiveInterval(1800);
 
-        return ResponseEntity.ok(new LoginResponseDTO(user));
+        String token = jwtTokenProvider.createToken(user.getId(), user.getUsername());
+
+        return ResponseEntity.ok(new LoginResponseDTO(token ,user));
     }
 
     @GetMapping("/logout")
