@@ -33,7 +33,9 @@ public class LocationController {
     // 특정 장소의 모든 구장 검색
     @GetMapping
     public ResponseEntity<List<LocationResponseDTO>> searchLocations(@RequestParam(required = false) String address,
-                                                                     @SessionAttribute(name = SessionConst.sessionId, required = false) Long userId) {
+                                                                     HttpServletRequest request) {
+
+        Long userId = (Long) request.getAttribute("userId");
 
         if(userId == null) {
             throw new IllegalArgumentException("로그인이 필요합니다.");
@@ -51,7 +53,9 @@ public class LocationController {
     // 검색한 장소의 세부사항
     @GetMapping("/{locationid}")
     public ResponseEntity<LocationResponseDTO> getLocationDetail(@PathVariable Long locationid,
-                                                                 @SessionAttribute(name = SessionConst.sessionId, required = false) Long userId) {
+                                                                 HttpServletRequest request) {
+
+        Long userId = (Long) request.getAttribute("userId");
 
         if(userId == null) {
             throw new IllegalArgumentException("로그인이 필요합니다.");

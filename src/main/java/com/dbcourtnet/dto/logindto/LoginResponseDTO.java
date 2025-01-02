@@ -12,7 +12,7 @@ public class LoginResponseDTO {
     private String token;
     private String username;
 
-    public LoginResponseDTO(String Token,User user)
+    public LoginResponseDTO(String token,User user)
     {
         this.userId = user.getId();
         this.token = token;

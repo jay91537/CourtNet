@@ -48,24 +48,19 @@ public class LoginController {
             throw new IllegalArgumentException("아이디 혹은 비밀번호가 일치하지 않습니다.");
         }
 
-        HttpSession session = request.getSession();
-        session.setAttribute(SessionConst.sessionId, user.getId());
-        session.setMaxInactiveInterval(1800);
-
         String token = jwtTokenProvider.createToken(user.getId(), user.getUsername());
 
         return ResponseEntity.ok(new LoginResponseDTO(token ,user));
     }
 
     @GetMapping("/logout")
-    public ResponseEntity<Void> logout(@SessionAttribute(name = SessionConst.sessionId, required = false) Long userId,
-                                       HttpServletRequest request) {
+    public ResponseEntity<Void> logout(HttpServletRequest request) {
+
+        Long userId = (Long) request.getAttribute("userId");
 
         if(userId == null) {
             throw new IllegalArgumentException("로그인이 필요합니다.");
         }
-
-        request.getSession().invalidate();
 
         return ResponseEntity.ok().build();
     }
