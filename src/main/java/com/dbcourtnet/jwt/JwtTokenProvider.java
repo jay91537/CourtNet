@@ -5,8 +5,14 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.security.Key;
+import java.util.Base64;
 import java.util.Date;
 
 /*
@@ -15,11 +21,25 @@ import java.util.Date;
     토큰에서 유저의 Id를 추출하는 역할등을 한다.
 */
 @Component
+@RequiredArgsConstructor
 public class JwtTokenProvider {
 
-    private final String secretkey = "LimjaehyeonInHongikUniversityAndSSSsSSSSssssssssssssssssssssssssssssss";
-    private final long accessTokenValidityInMs = 30 * 60 * 1000L; // 30분
-    private final long refreshTokenValidityInMs = 7 * 24 * 60 * 60 * 1000L; // 7일
+    @Value("${jwt.secret}")
+    private String secretKey;
+
+    @Value("${jwt.access-token-validity-in-ms}")
+    private long accessTokenValidityInMs;
+
+    @Value("${jwt.refresh-token-validity-in-ms}")
+    private long refreshTokenValidityInMs;
+
+    private Key key;
+
+    @PostConstruct
+    public void init() {
+        byte[] keyBytes = Base64.getDecoder().decode(secretKey);
+        this.key = Keys.hmacShaKeyFor(keyBytes);
+    }
 
     public String createAccessToken(Long userId, String username) {
         return createToken(userId, username, accessTokenValidityInMs);
@@ -45,7 +65,7 @@ public class JwtTokenProvider {
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(validity)
-                .signWith(Keys.hmacShaKeyFor(secretkey.getBytes())) // 서명
+                .signWith(key) // 서명
                 .compact(); // 토큰 생성
     }
 
@@ -54,7 +74,7 @@ public class JwtTokenProvider {
         try {
             // 토큰 파싱 및 검증
             Jws<Claims> claims = Jwts.parserBuilder()
-                    .setSigningKey(Keys.hmacShaKeyFor(secretkey.getBytes()))
+                    .setSigningKey(key)
                     .build()
                     .parseClaimsJws(token);
             // 만료 시간 검증
@@ -67,7 +87,7 @@ public class JwtTokenProvider {
     // 토큰에서 유저 Id 추출
     public Long getUserIdFromToken(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(Keys.hmacShaKeyFor(secretkey.getBytes()))
+                .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
