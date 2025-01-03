@@ -26,12 +26,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // request 객체에서 토큰 추출
         String token = getTokenFromRequest(request);
 
+        String requestURI = request.getRequestURI();
+        if (requestURI.startsWith("/api/auth/login")||requestURI.startsWith("/api/auth/refresh")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         // 토큰 유효성 검증
-        if (token != null && jwtTokenProvider.validateToken(token)) {
-            // 토큰에서 사용자 Id 추출
-            Long userId = jwtTokenProvider.getUserIdFromToken(token);
-            // 추출한 정보를 request 객체에 저장
-            request.setAttribute("userId", userId);
+        if (token != null) {
+            if(jwtTokenProvider.validateToken(token)) {
+                // 토큰에서 사용자 Id 추출
+                Long userId = jwtTokenProvider.getUserIdFromToken(token);
+                // 추출한 정보를 request 객체에 저장
+                request.setAttribute("userId", userId);
+            }
+            else {
+                // 토큰이 만료되었거나, 허용되지 않은 토큰일 경우
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "유효하지 않은 토큰입니다.");
+                throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
+            }
+        } else {
+            // 토큰이 존재하지 않을 경우
+            throw new IllegalArgumentException("토큰이 존재하지 않습니다.");
         }
 
         // 다음 필터로 request 전달

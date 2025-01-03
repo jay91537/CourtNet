@@ -18,10 +18,19 @@ import java.util.Date;
 public class JwtTokenProvider {
 
     private final String secretkey = "LimjaehyeonInHongikUniversityAndSSSsSSSSssssssssssssssssssssssssssssss";
-    private final long validityInMs = 3600000;
+    private final long accessTokenValidityInMs = 30 * 60 * 1000L; // 30분
+    private final long refreshTokenValidityInMs = 7 * 24 * 60 * 60 * 1000L; // 7일
+
+    public String createAccessToken(Long userId, String username) {
+        return createToken(userId, username, accessTokenValidityInMs);
+    }
+
+    public String createRefreshToken(Long userId, String username) {
+        return createToken(userId, username, refreshTokenValidityInMs);
+    }
 
     // 토큰 생성
-    public String createToken(Long userId, String username) {
+    public String createToken(Long userId, String username, long validityInMs) {
         // 토큰에 포함될 정보
         Claims claims = Jwts.claims().setSubject(username);
         claims.put("userId", userId);
@@ -31,7 +40,7 @@ public class JwtTokenProvider {
         // 만료 시간
         Date validity = new Date(now.getTime() + validityInMs);
 
-        // JWT빌드
+        // Jwt 빌드
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
