@@ -34,8 +34,10 @@ public class ReviewController {
     @PostMapping("/findLocation/{locationId}")
     public ResponseEntity<Void> createReview(
             @PathVariable Long locationId,
-            @SessionAttribute(name = SessionConst.sessionId, required = false) Long userId,
-            @RequestBody ReviewRequestDTO reviewRequest) {
+            @RequestBody ReviewRequestDTO reviewRequest,
+            HttpServletRequest request) {
+
+        Long userId = (Long) request.getAttribute("userId");
 
         if(userId == null) {
             throw new IllegalArgumentException("로그인이 필요합니다.");
@@ -55,7 +57,9 @@ public class ReviewController {
     // 내 모든 리뷰 조회
     @GetMapping("/myReview")
     public ResponseEntity<List<ReviewResponseDTO>> getMyReviews(
-            @SessionAttribute(name = SessionConst.sessionId, required = false) Long userId) {
+            HttpServletRequest request) {
+
+        Long userId = (Long) request.getAttribute("userId");
 
         if(userId == null) {
             throw new IllegalArgumentException("로그인이 필요합니다.");
@@ -72,9 +76,11 @@ public class ReviewController {
 
     @DeleteMapping("findLocation/{locationId}/{reviewId}")
     public ResponseEntity<Void> deleteReview(
-            @SessionAttribute(name = SessionConst.sessionId, required = false) Long userId,
             @PathVariable Long locationId,
-            @PathVariable Long reviewId) {
+            @PathVariable Long reviewId,
+            HttpServletRequest request) {
+
+        Long userId = (Long) request.getAttribute("userId");
 
         if(userId == null) {
             throw new IllegalArgumentException("로그인이 필요합니다.");
@@ -86,10 +92,12 @@ public class ReviewController {
 
     @PatchMapping("/findLocation/{locationId}/{reviewId}")
     public ResponseEntity<ReviewResponseDTO> updateReview(
-            @SessionAttribute(name = SessionConst.sessionId, required = false) Long userId,
             @PathVariable Long locationId,
             @PathVariable Long reviewId,
-            @RequestBody ReviewUpdateRequestDTO reviewUpdateRequest) {
+            @RequestBody ReviewUpdateRequestDTO reviewUpdateRequest,
+            HttpServletRequest request) {
+
+        Long userId = (Long) request.getAttribute("userId");
 
         if(userId == null) {
             throw new IllegalArgumentException("로그인이 필요합니다.");

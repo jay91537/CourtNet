@@ -10,3 +10,8 @@ spring:
     hibernate:
       ddl-auto: create-drop
     show-sql: true
+
+jwt:
+  secret: ${JWT_SECRET_KEY}  # 환경 변수에서 가져옴
+  access-token-validity-in-ms: 1800000    # 30분
+  refresh-token-validity-in-ms: 604800000  # 7일
