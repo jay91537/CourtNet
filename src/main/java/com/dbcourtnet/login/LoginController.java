@@ -21,7 +21,7 @@ public class LoginController {
 
     private final LoginService loginService;
 
-    // 로그이 되기 전 home 화면
+    // home 화면
     @GetMapping(value = {"/home"})
     public String home(@CookieValue(name = "userId", required = false) Long userId, Model model) {
 
@@ -42,13 +42,14 @@ public class LoginController {
     }
 
     @PostMapping("/join")
-    public String join(@Valid @ModelAttribute JoinRequestDTO joinRequest, BindingResult bindingResult) {
+    public String join(@Valid @ModelAttribute("joinRequest") JoinRequestDTO joinRequest, BindingResult bindingResult, Model model) {
 
         if(loginService.checkLoginIdDuplicate(joinRequest.getLoginId())) {
             bindingResult.addError(new FieldError("joinRequest", "loginId", "로그인 아이디가 중복됩니다."));
         }
 
         if(bindingResult.hasErrors()) {
+            model.addAttribute("joinRequest", joinRequest);
             return "join";
         }
 
@@ -65,7 +66,7 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String login(@ModelAttribute LoginRequestDTO loginRequest, HttpServletResponse response) throws Exception {
+    public String login(@ModelAttribute("loginRequest") LoginRequestDTO loginRequest, HttpServletResponse response) throws Exception {
 
         User user = loginService.login(loginRequest);
 
@@ -73,7 +74,8 @@ public class LoginController {
             throw new Exception("아이디 혹은 비밀번호가 일치하지 않습니다.");
         }
 
-        // 로그인 성공 => 쿠키 생성
+        // 로그인 성공 시 쿠키 생성
+        // 쿠키는 value 값을 문자열로 저장함
         Cookie cookie = new Cookie("userId", String.valueOf(user.getId()));
         cookie.setMaxAge(60 * 60);  // 쿠키 유효 시간 : 1시간
         response.addCookie(cookie);

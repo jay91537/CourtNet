@@ -9,6 +9,9 @@ import com.dbcourtnet.login.LoginController;
 import com.dbcourtnet.login.LoginService;
 import com.dbcourtnet.review.Review;
 import com.dbcourtnet.review.ReviewService;
+import com.dbcourtnet.user.User;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jdk.jfr.MemoryAddress;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -26,7 +29,9 @@ public class LocationController {
     private final LocationService locationService;
     private final CourtService courtService;
     private final ReviewService reviewService;
+    private final LoginService loginService;
 
+    // 코트 찾기 요청
     @GetMapping(value = "")
     public String findLocationPage(@CookieValue(name = "userId", required = true) Long userId, Model model) {
         model.addAttribute("controllerLocationRequest", new ControllerLocationRequestDTO());
