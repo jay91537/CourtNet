@@ -1,5 +1,6 @@
 package com.dbcourtnet.review;
 
+import com.dbcourtnet.dto.reviewdto.ReviewUpdateRequestDTO;
 import com.dbcourtnet.location.Location;
 import com.dbcourtnet.location.LocationRepository;
 import com.dbcourtnet.dto.reviewdto.ReviewRequestDTO;
@@ -21,33 +22,16 @@ public class ReviewService {
     private final LocationRepository locationRepository;
 
     // 리뷰 생성
-    public void join(ReviewRequestDTO reviewRequest) {
-
-        if(reviewRequest.getUserId()==null){
-            throw new IllegalArgumentException("유저가 존재하지 않습니다.");
-        }
-        if(reviewRequest.getLocationId()==null){
-            throw new IllegalArgumentException("구장이 존재하지 않습니다.");
-        }
+    @Transactional
+    public Long join(ReviewRequestDTO reviewRequest) {
 
         User user = userRepository.findById(reviewRequest.getUserId()).orElseThrow(() -> new IllegalArgumentException("유저가 존재하지 않습니다."));
         Location location = locationRepository.findById(reviewRequest.getLocationId()).orElseThrow(() -> new IllegalArgumentException("구장이 존재하지 않습니다."));
 
         Review review = reviewRequest.toEntity(user,location);
         reviewRepository.save(review);
+        return review.getId();
     }
-
-    // 어떤 유저가 쓴 모든 리뷰
-    @Transactional
-    public List<Review> getAllReviewsByUser (ReviewRequestDTO reviewRequest) {
-
-        if (reviewRequest.getUserId() == null) {
-            throw new IllegalArgumentException("유저가 존재하지 않습니다.");
-        }
-
-        return reviewRepository.findAllByUserId(reviewRequest.getUserId());
-    }
-
 
     // 어떤 구장에 대한 모든 리뷰
     @Transactional
@@ -60,44 +44,10 @@ public class ReviewService {
         return reviewRepository.findAllByLocationId(id);
     }
 
-    // 어떤 유저의 특정 구장 리뷰 업데이트
     @Transactional
-    public void updateReviewByUser (ReviewRequestDTO reviewRequest) {
-
-        if (reviewRequest.getUserId() == null) {
-            throw new IllegalArgumentException("유저가 존재하지 않습니다.");
-        }
-
-
-
-    }
-
-    // 어떤 유저의 특정 구장 리뷰 삭제 기능
-    @Transactional
-    public void deleteReviewByUser (ReviewRequestDTO reviewRequest) {
-
-        if (reviewRequest.getUserId() == null) {
-            throw new IllegalArgumentException("유저가 존재하지 않습니다.");
-        }
-
-
-
-    }
-
-    // 어떤 유저의 모든 구장 리뷰 삭제 기능
-    @Transactional
-    public void deleteAllReviewsByUser (ReviewRequestDTO reviewRequest) {
-
-        if (reviewRequest.getUserId() == null) {
-            throw new IllegalArgumentException("유저가 존재하지 않습니다.");
-        }
-
-    }
-
-
     public List<Review> findAllByUserId(Long userId) {
 
-        if(userId == null){
+        if (userId == null) {
             throw new IllegalArgumentException("존재하지 않는 유저입니다.");
         }
 
@@ -110,7 +60,7 @@ public class ReviewService {
     }
 
     @Transactional
-    public void updateReview(Long reviewId, ReviewRequestDTO reviewRequest) {
+    public void updateReview(Long reviewId, ReviewUpdateRequestDTO reviewRequest) {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new IllegalArgumentException("리뷰가 존재하지 않습니다."));
 
