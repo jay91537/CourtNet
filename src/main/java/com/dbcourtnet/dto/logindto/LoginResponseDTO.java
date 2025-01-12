@@ -9,8 +9,13 @@ import lombok.Setter;
 public class LoginResponseDTO {
 
     private Long userId;
+    private String token;
+    private String username;
 
-    public LoginResponseDTO(User user) {
-        this.userId=user.getId();
+    public LoginResponseDTO(String token,User user)
+    {
+        this.userId = user.getId();
+        this.token = token;
+        this.username = user.getUsername();
     }
 }
