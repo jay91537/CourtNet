@@ -56,7 +56,7 @@ public class LoginController {
                         () -> refreshTokenRepository.save(new RefreshToken(refreshToken, user.getId()))
                 );
 
-        return ResponseEntity.ok(new TokenDTO(accessToken, refreshToken));
+        return ResponseEntity.ok(new TokenDTO(accessToken, refreshToken, user.getUsername()));
     }
 
     // 토큰 갱신 요청 처리
@@ -82,7 +82,7 @@ public class LoginController {
         savedRefreshToken.updateRefreshToken(newRefreshToken);
 
         // 새로운 access 토큰과 refresh 토큰 전달
-        return ResponseEntity.ok(new TokenDTO(newAccessToken, newRefreshToken));
+        return ResponseEntity.ok(new TokenDTO(newAccessToken, newRefreshToken, user.getUsername()));
     }
 
 
