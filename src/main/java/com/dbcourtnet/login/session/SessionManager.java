@@ -12,15 +12,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class SessionManager {
+    private static Map<String, Long> sessionDB = new ConcurrentHashMap<>();
 
-    // store는 세션 DB의 역할 수행
-    private static Map<String, Long> store = new ConcurrentHashMap<>();
-
-    public void createSession(Long value, HttpServletResponse response) {
+    public void createSession(Long userId, HttpServletResponse response) {
 
         String token = UUID.randomUUID().toString();
-        store.put(token ,value);
-        Cookie cookie = new Cookie(SessionConst.sessionId, token);
+        sessionDB.put(token ,userId);
+        Cookie cookie = new Cookie("LOGIN_USER", token);
         response.addCookie(cookie);
 
     }
@@ -32,7 +30,7 @@ public class SessionManager {
             return null;
         }
 
-        return store.get(sessionCookie.getValue());
+        return sessionDB.get(sessionCookie.getValue());
     }
 
     public Cookie findCookie(HttpServletRequest request) {
@@ -40,7 +38,7 @@ public class SessionManager {
             return null;
         }
         return Arrays.stream(request.getCookies())
-                .filter(cookie -> cookie.getName().equals(SessionConst.sessionId))
+                .filter(cookie -> cookie.getName().equals("LOGIN_USER"))
                 .findFirst()
                 .orElse(null);
     }
@@ -49,7 +47,7 @@ public class SessionManager {
 
         Cookie sessionCookie = findCookie(request);
         if(sessionCookie != null) {
-            store.remove(sessionCookie.getValue());
+            sessionDB.remove(sessionCookie.getValue());
         }
 
     }

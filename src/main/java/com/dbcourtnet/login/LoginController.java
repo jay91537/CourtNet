@@ -25,7 +25,7 @@ public class LoginController {
     private final LoginService loginService;
     private final SessionManager sessionManager;
 
-    // 로그이 되기 전 home 화면 (세션 로그인)
+    // 로그인 화면 (session 로그인)
     @GetMapping(value = {"/home"})
     public String home( HttpServletRequest request , Model model) {
 
