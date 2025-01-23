@@ -1,11 +1,9 @@
 spring:
-  # DB ?? ?? ??
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/courtnetdb
-    username: root
-    password: js365@dwy5
-  # JPA ??
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: create-drop
