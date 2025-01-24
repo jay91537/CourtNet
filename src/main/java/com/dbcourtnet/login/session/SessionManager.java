@@ -26,7 +26,7 @@ public class SessionManager {
     public Long getSession(HttpServletRequest request) {
         Cookie sessionCookie = findCookie(request);
 
-        if(sessionCookie == null) {
+        if(sessionCookie == null || !sessionDB.containsKey(sessionCookie.getValue())) {
             return null;
         }
 

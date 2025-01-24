@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
+
 @Controller
 @RequiredArgsConstructor
 @RequestMapping(value = "/findLocation")
@@ -56,16 +58,16 @@ public class LocationController {
     }
 
     @GetMapping("/location/{id}")
-    public String locationDetail(HttpServletRequest request, @PathVariable Long id, Model model) {
+    public String locationDetail(HttpServletRequest request, @PathVariable Long locationId, Model model) {
 
         if(sessionManager.getSession(request)==null) {
             return "/home";
         }
 
-        Optional<Location> location = locationService.findLocationById(id);
+        Optional<Location> location = locationService.findLocationById(locationId);
 
-        List<CourtTexture> courtTextures = courtService.findCourtTextures(id);
-        List<Review> reviewList = reviewService.findAllByLocationId(id);
+        List<CourtTexture> courtTextures = courtService.findCourtTextures(locationId);
+        List<Review> reviewList = reviewService.findAllByLocationId(locationId);
 
         model.addAttribute("userId", sessionManager.getSession(request));
         model.addAttribute("location", location);
