@@ -14,4 +14,5 @@ Thymeleaf를 이용한 Server-Side Rendering에서 협업 및 배포를 위해 r
 - 위 과정을 간소화 -> Httpsession을 이용해 세션DB를 직접 생성하지 않고, Spring에서 제공하는 @SessionAttribute 어노테이션을 통해 다른 페이지에서 사용자에 대한 인증과정을 간소화
 
 2. Jwt 이용
-- Spring Security를 사용하지 않고 jjwt라이브러리만 이용 (branch이름 : rest/api)
+- Spring Security를 사용하지 않고 jjwt라이브러리만 이용 (branch이름 : refactor/rest-api-jwt-v2)
+
