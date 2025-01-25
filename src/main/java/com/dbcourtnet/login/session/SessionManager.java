@@ -18,7 +18,7 @@ public class SessionManager {
 
         String token = UUID.randomUUID().toString();
         sessionDB.put(token ,userId);
-        Cookie cookie = new Cookie("LOGIN_USER", token);
+        Cookie cookie = new Cookie(SessionConst.sessionId, token);
         response.addCookie(cookie);
 
     }
@@ -38,7 +38,7 @@ public class SessionManager {
             return null;
         }
         return Arrays.stream(request.getCookies())
-                .filter(cookie -> cookie.getName().equals("LOGIN_USER"))
+                .filter(cookie -> cookie.getName().equals(SessionConst.sessionId))
                 .findFirst()
                 .orElse(null);
     }
