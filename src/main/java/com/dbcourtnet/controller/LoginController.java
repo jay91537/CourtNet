@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -70,8 +71,9 @@ public class LoginController {
         return "login";
     }
 
+    // 최초 로그인
     @PostMapping("/login")
-    public String login(@ModelAttribute LoginRequestDTO loginRequest, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public String login(@ModelAttribute LoginRequestDTO loginRequest, HttpServletRequest request) throws Exception {
 
         User user = loginService.login(loginRequest);
 
@@ -79,8 +81,11 @@ public class LoginController {
             throw new Exception("아이디 혹은 비밀번호가 일치하지 않습니다.");
         }
 
+        // 서버에 세션 생성 or 기존 세션 반환
         HttpSession session = request.getSession();
+        // 내부 저장소에 <"LOGIN_USER", userId> 형태로 담는다
         session.setAttribute(SessionConst.sessionId, user.getId());
+        // 만료시간 설정
         session.setMaxInactiveInterval(60);
 
         return "redirect:/home";

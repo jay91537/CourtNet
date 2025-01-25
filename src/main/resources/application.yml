@@ -10,3 +10,8 @@ spring:
     hibernate:
       ddl-auto: create-drop
     show-sql: true
+
+server:
+  servlet:
+    session:
+      tracking-modes: cookie
