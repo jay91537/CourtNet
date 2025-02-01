@@ -27,7 +27,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = getTokenFromRequest(request);
 
         String requestURI = request.getRequestURI();
-        if (requestURI.startsWith("/api/auth")) {
+        if (requestURI.startsWith("/api/auth")||requestURI.startsWith("/hc")||requestURI.startsWith("/env")) {
             filterChain.doFilter(request, response);
             return;
         }
