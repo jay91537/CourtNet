@@ -32,7 +32,7 @@ public class MakeInitData {
         User user1 = User.builder()
                 .loginId("user1")
                 .password("1234")
-                .username("정윤")
+                .username("재현")
                 .gender(Gender.MALE)
                 .build();
         userRepository.save(user1);
