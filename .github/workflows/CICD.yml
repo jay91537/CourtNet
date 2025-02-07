@@ -2,9 +2,9 @@ name: CICD
 
 on:
   push:
-    branches: [ "deploy/docker-V3" ]
+    branches: [ "deploy/docker-V4" ]
   pull_request:
-    branches: [ "deploy/docker-V3" ]
+    branches: [ "deploy/docker-V4" ]
 
 permissions:
   contents: read
