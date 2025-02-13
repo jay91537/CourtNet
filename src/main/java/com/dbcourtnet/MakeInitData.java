@@ -69,6 +69,14 @@ public class MakeInitData {
                 .build();
         userRepository.save(user5);
 
+        User user6 = User.builder()
+                .loginId("user6")
+                .password("1234")
+                .username("승빈")
+                .gender(Gender.MALE)
+                .build();
+        userRepository.save(user6);
+
         // 구장 하드코딩
         Location location1 = Location.builder()
                 .locationName("평촌중앙공원")
